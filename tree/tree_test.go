@@ -39,36 +39,33 @@ func TestDownsample(t *testing.T) {
 
 func TestCreateDecomposeTree(t *testing.T) {
 	qwe := createRandomFloat(120)
-	t1 := CreateTree(qwe, 0, 20, 2)
+	t1 := CreateTree([]int{0}, qwe, 20, 2)
 	t1.Decompose(1)
 	if len(t1.Children) != 2 {
 		panic("len(t1.Children)!=2")
 	}
-	if t1.Children[0].Level != 1 {
-		panic("t1.Children[0].Level!=1")
+	if t1.Children[0].FamilyTreePath[0] != 0 {
+		panic("t1.Children[0].FamilyTreePath[0] != 0")
 	}
-	if t1.Children[0].Orig[0] != qwe[0] {
-		panic("t1.Children[0].Orig[0] != qwe[0]")
-	}
-	if t1.Children[1].Orig[0] != qwe[60] {
-		panic("t1.Children[1].Orig[0] != qwe[60]")
+	if t1.Children[0].FamilyTreePath[1] != 0 {
+		panic("t1.Children[0].FamilyTreePath[1] != 0")
 	}
 }
 
 func TestDecomposeMax(t *testing.T) {
 	qwe := createRandomFloat(120)
-	t1 := CreateTree(qwe, 0, 20, 2)
+	t1 := CreateTree([]int{0}, qwe, 20, 2)
 	t1.DecomposeMax()
 	if len(t1.Children) != 2 {
 		panic("len(t1.Children)!=2")
 	}
-	if t1.Children[0].Level != 1 {
-		panic("t1.Children[0].Level!=1")
+	if t1.Children[0].FamilyTreePath[0] != 0 {
+		panic("t1.Children[0].FamilyTreePath[0] != 0")
 	}
-	if t1.Children[0].Orig[0] != qwe[0] {
-		panic("t1.Children[0].Orig[0] != qwe[0]")
+	if t1.Children[0].FamilyTreePath[1] != 0 {
+		panic("t1.Children[0].FamilyTreePath[1] != 0")
 	}
-	if t1.Children[1].Orig[0] != qwe[60] {
-		panic("t1.Children[1].Orig[0] != qwe[60]")
+	if t1.Children[1].FamilyTreePath[1] != 1 {
+		panic(" t1.Children[1].FamilyTreePath[1]")
 	}
 }

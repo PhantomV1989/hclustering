@@ -32,7 +32,7 @@ func TestA(t *testing.T) {
 	}
 
 	h := func(x []float64) tree.Tree {
-		x1 := tree.CreateTree(x, 0, leafSize, branchCount)
+		x1 := tree.CreateTree([]int{0}, x, leafSize, branchCount)
 		x1.DecomposeMax()
 		return x1
 	}
@@ -53,12 +53,15 @@ func TestA(t *testing.T) {
 	}
 	result := map[string]int{}
 	FindAllLeafPositions("0", &aTree, &leafCollection, &result, scoreLim)
-	println("asd")
 
 	InsertLeafCollectionRecursive("0", &aTree, &leafCollection, scoreLim, InsertMode.Delete)
 	InsertLeafCollectionRecursive("0", &bTree, &leafCollection, scoreLim, InsertMode.Delete)
 
 	if leafCollection[2].MatchedPositions["0.1.3"] != 0 {
+		panic("")
+	}
+
+	if result["0.0.3:2"] != 2 {
 		panic("")
 	}
 }

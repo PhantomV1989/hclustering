@@ -10,38 +10,38 @@ type Leaf struct {
 }
 
 type Tree struct {
-	Level       int
-	LeafSize    int
-	BranchCount int
-	Orig        []float64
-	Leaf        []float64
-	Children    []*Tree
+	FamilyTreePath []int //oldest first
+	LeafSize       int
+	BranchCount    int
+	Orig           []float64
+	Leaf           []float64
+	Children       []*Tree
 }
 
-func CreateTree(f []float64, Level, LeafSize, BranchCount int) Tree {
+func CreateTree(familyTreePath []int, f []float64, LeafSize, BranchCount int) Tree {
 	leaf := downsample(f, LeafSize)
 	miv := floats.Min(leaf)
 	floats.AddConst(-miv, leaf)
 
 	return Tree{
-		Level:       Level,
-		Orig:        f,
-		Leaf:        leaf,
-		LeafSize:    LeafSize,
-		BranchCount: BranchCount,
+		FamilyTreePath: familyTreePath,
+		Orig:           f,
+		Leaf:           leaf,
+		LeafSize:       LeafSize,
+		BranchCount:    BranchCount,
 	}
 }
 
 func (t *Tree) DecomposeMax() {
 	if len(t.Orig) >= t.BranchCount*t.LeafSize {
 		branchArrs := partitionFloatArr(t.Orig, t.BranchCount)
+		ftp := t.FamilyTreePath
 		for b := range branchArrs {
-			tt := CreateTree(branchArrs[b], t.Level+1, t.LeafSize, t.BranchCount)
+			tt := CreateTree(append(ftp, b), branchArrs[b], t.LeafSize, t.BranchCount)
 			tt.DecomposeMax()
 			t.Children = append(t.Children, &tt)
 		}
 	}
-
 }
 
 func (t *Tree) Decompose(level int) {
@@ -49,8 +49,9 @@ func (t *Tree) Decompose(level int) {
 		return
 	}
 	branchArrs := partitionFloatArr(t.Orig, t.BranchCount)
+	ftp := t.FamilyTreePath
 	for b := range branchArrs {
-		tt := CreateTree(branchArrs[b], t.Level+1, t.LeafSize, t.BranchCount)
+		tt := CreateTree(append(ftp, b), branchArrs[b], t.LeafSize, t.BranchCount)
 		tt.Decompose(level - 1)
 		t.Children = append(t.Children, &tt)
 	}

@@ -21,7 +21,7 @@ func FindAllLeafPositions(prefix string, tree *tree.Tree, leafArray *[]LeafData,
 	// leafPos.TreeLevel.TreePos
 	leafPos, treeCnt := FindLeaf(prefix, tree, leafArray, scoreLimit)
 	if leafPos > -1 {
-		(*result)[prefix] = treeCnt
+		(*result)[prefix+":"+strconv.Itoa(leafPos)] = treeCnt
 	}
 	for i := range tree.Children {
 		FindAllLeafPositions(prefix+"."+strconv.Itoa(i), tree.Children[i], leafArray, result, scoreLimit)
