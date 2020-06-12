@@ -37,7 +37,7 @@ func CreateTree(f []float64, Level, Pos, LeafSize, BranchCount int) Tree {
 }
 
 func (t *Tree) DecomposeMax() {
-	if len(t.Orig) > 2*t.LeafSize {
+	if len(t.Orig) >= t.BranchCount*t.LeafSize {
 		branchArrs := partitionFloatArr(t.Orig, t.BranchCount)
 		for b := range branchArrs {
 			tt := CreateTree(branchArrs[b], t.Level+1, b, t.LeafSize, t.BranchCount)
