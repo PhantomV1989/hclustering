@@ -1,8 +1,6 @@
 package tree
 
 import (
-	"strconv"
-
 	"gonum.org/v1/gonum/floats"
 )
 
@@ -13,7 +11,6 @@ type Leaf struct {
 
 type Tree struct {
 	Level       int
-	Pos         int
 	LeafSize    int
 	BranchCount int
 	Orig        []float64
@@ -21,14 +18,13 @@ type Tree struct {
 	Children    []*Tree
 }
 
-func CreateTree(f []float64, Level, Pos, LeafSize, BranchCount int) Tree {
+func CreateTree(f []float64, Level, LeafSize, BranchCount int) Tree {
 	leaf := downsample(f, LeafSize)
 	miv := floats.Min(leaf)
 	floats.AddConst(-miv, leaf)
 
 	return Tree{
 		Level:       Level,
-		Pos:         Pos,
 		Orig:        f,
 		Leaf:        leaf,
 		LeafSize:    LeafSize,
@@ -40,7 +36,7 @@ func (t *Tree) DecomposeMax() {
 	if len(t.Orig) >= t.BranchCount*t.LeafSize {
 		branchArrs := partitionFloatArr(t.Orig, t.BranchCount)
 		for b := range branchArrs {
-			tt := CreateTree(branchArrs[b], t.Level+1, b, t.LeafSize, t.BranchCount)
+			tt := CreateTree(branchArrs[b], t.Level+1, t.LeafSize, t.BranchCount)
 			tt.DecomposeMax()
 			t.Children = append(t.Children, &tt)
 		}
@@ -54,14 +50,10 @@ func (t *Tree) Decompose(level int) {
 	}
 	branchArrs := partitionFloatArr(t.Orig, t.BranchCount)
 	for b := range branchArrs {
-		tt := CreateTree(branchArrs[b], t.Level+1, b, t.LeafSize, t.BranchCount)
+		tt := CreateTree(branchArrs[b], t.Level+1, t.LeafSize, t.BranchCount)
 		tt.Decompose(level - 1)
 		t.Children = append(t.Children, &tt)
 	}
-}
-
-func (t *Tree) GetPositionString() string {
-	return strconv.Itoa(t.Level) + "." + strconv.Itoa(t.Pos)
 }
 
 func downsample(f []float64, toSize int) []float64 {

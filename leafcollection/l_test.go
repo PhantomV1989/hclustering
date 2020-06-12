@@ -32,7 +32,7 @@ func TestA(t *testing.T) {
 	}
 
 	h := func(x []float64) tree.Tree {
-		x1 := tree.CreateTree(x, 0, 0, leafSize, branchCount)
+		x1 := tree.CreateTree(x, 0, leafSize, branchCount)
 		x1.DecomposeMax()
 		return x1
 	}
@@ -42,24 +42,23 @@ func TestA(t *testing.T) {
 
 	leafCollection := []LeafData{}
 
-	InsertLeafCollectionRecursive(&aTree, &leafCollection, scoreLim, InsertMode.Insert)
-	InsertLeafCollectionRecursive(&bTree, &leafCollection, scoreLim, InsertMode.Insert)
+	InsertLeafCollectionRecursive("0", &aTree, &leafCollection, scoreLim, InsertMode.Insert)
+	InsertLeafCollectionRecursive("0", &bTree, &leafCollection, scoreLim, InsertMode.Insert)
 
-	if len(leafCollection[2].MatchedPositions) != 4 {
-		panic("len(leafCollection[2].MatchedPositions)!=4")
+	if len(leafCollection[2].MatchedPositions) != 8 {
+		panic("len(leafCollection[2].MatchedPositions)!=8")
 	}
-	if leafCollection[2].MatchedPositions["2.0"] != 4 {
+	if leafCollection[2].MatchedPositions["0.1.3"] != 2 {
 		panic("")
 	}
 	result := map[string]int{}
-	FindAllLeafPositions(&aTree, &leafCollection, &result, scoreLim)
+	FindAllLeafPositions("0", &aTree, &leafCollection, &result, scoreLim)
 	println("asd")
 
-	InsertLeafCollectionRecursive(&aTree, &leafCollection, scoreLim, InsertMode.Delete)
-	InsertLeafCollectionRecursive(&bTree, &leafCollection, scoreLim, InsertMode.Delete)
+	InsertLeafCollectionRecursive("0", &aTree, &leafCollection, scoreLim, InsertMode.Delete)
+	InsertLeafCollectionRecursive("0", &bTree, &leafCollection, scoreLim, InsertMode.Delete)
 
-	if leafCollection[2].MatchedPositions["2.0"] != 0 {
+	if leafCollection[2].MatchedPositions["0.1.3"] != 0 {
 		panic("")
 	}
-
 }

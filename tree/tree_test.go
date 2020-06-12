@@ -39,7 +39,7 @@ func TestDownsample(t *testing.T) {
 
 func TestCreateDecomposeTree(t *testing.T) {
 	qwe := createRandomFloat(120)
-	t1 := CreateTree(qwe, 0, 0, 20, 2)
+	t1 := CreateTree(qwe, 0, 20, 2)
 	t1.Decompose(1)
 	if len(t1.Children) != 2 {
 		panic("len(t1.Children)!=2")
@@ -53,18 +53,11 @@ func TestCreateDecomposeTree(t *testing.T) {
 	if t1.Children[1].Orig[0] != qwe[60] {
 		panic("t1.Children[1].Orig[0] != qwe[60]")
 	}
-	if t1.Children[0].Pos != 0 {
-		panic("t1.Children[0].Pos != 0")
-	}
-	if t1.Children[1].Pos != 1 {
-		panic("t1.Children[1].Pos != 1")
-	}
-
 }
 
 func TestDecomposeMax(t *testing.T) {
 	qwe := createRandomFloat(120)
-	t1 := CreateTree(qwe, 0, 0, 20, 2)
+	t1 := CreateTree(qwe, 0, 20, 2)
 	t1.DecomposeMax()
 	if len(t1.Children) != 2 {
 		panic("len(t1.Children)!=2")
@@ -78,11 +71,4 @@ func TestDecomposeMax(t *testing.T) {
 	if t1.Children[1].Orig[0] != qwe[60] {
 		panic("t1.Children[1].Orig[0] != qwe[60]")
 	}
-	if t1.Children[0].Pos != 0 {
-		panic("t1.Children[0].Pos != 0")
-	}
-	if t1.Children[1].Pos != 1 {
-		panic("t1.Children[1].Pos != 1")
-	}
-
 }
