@@ -18,6 +18,21 @@ type Tree struct {
 	Children       []*Tree
 }
 
+func CreateTreeDecomposeMax(familyTreePath []int, f []float64, LeafSize, BranchCount int) Tree {
+	leaf := downsample(f, LeafSize)
+	miv := floats.Min(leaf)
+	floats.AddConst(-miv, leaf)
+	tree := Tree{
+		FamilyTreePath: familyTreePath,
+		Orig:           f,
+		Leaf:           leaf,
+		LeafSize:       LeafSize,
+		BranchCount:    BranchCount,
+	}
+	tree.DecomposeMax()
+	return tree
+}
+
 func CreateTree(familyTreePath []int, f []float64, LeafSize, BranchCount int) Tree {
 	leaf := downsample(f, LeafSize)
 	miv := floats.Min(leaf)
@@ -32,6 +47,7 @@ func CreateTree(familyTreePath []int, f []float64, LeafSize, BranchCount int) Tr
 	}
 }
 
+// DecomposeMax decomposes tree until the smallest original leaf array is >= defined unit leaf size
 func (t *Tree) DecomposeMax() {
 	if len(t.Orig) >= t.BranchCount*t.LeafSize {
 		branchArrs := partitionFloatArr(t.Orig, t.BranchCount)
@@ -44,6 +60,7 @@ func (t *Tree) DecomposeMax() {
 	}
 }
 
+// Decompose breaks tree down by n levels
 func (t *Tree) Decompose(level int) {
 	if level <= 0 {
 		return

@@ -42,8 +42,8 @@ func TestA(t *testing.T) {
 
 	leafCollection := []LeafData{}
 
-	InsertLeafCollectionRecursive("0", &aTree, &leafCollection, scoreLim, InsertMode.Insert)
-	InsertLeafCollectionRecursive("0", &bTree, &leafCollection, scoreLim, InsertMode.Insert)
+	InsertLeavesRecursive("0", &aTree, &leafCollection, scoreLim, InsertMode.Insert)
+	InsertLeavesRecursive("0", &bTree, &leafCollection, scoreLim, InsertMode.Insert)
 
 	if len(leafCollection[2].MatchedPositions) != 8 {
 		panic("len(leafCollection[2].MatchedPositions)!=8")
@@ -51,17 +51,18 @@ func TestA(t *testing.T) {
 	if leafCollection[2].MatchedPositions["0.1.3"] != 2 {
 		panic("")
 	}
-	result := map[string]int{}
-	FindAllLeafPositions("0", &aTree, &leafCollection, &result, scoreLim)
-
-	InsertLeafCollectionRecursive("0", &aTree, &leafCollection, scoreLim, InsertMode.Delete)
-	InsertLeafCollectionRecursive("0", &bTree, &leafCollection, scoreLim, InsertMode.Delete)
+	FindAllLeafPositions("0", &aTree, &leafCollection, scoreLim, true)
+	GetHierarchicalMatches("0", &bTree, &leafCollection, scoreLim, true)
+	InsertLeavesRecursive("0", &aTree, &leafCollection, scoreLim, InsertMode.Delete)
+	InsertLeavesRecursive("0", &bTree, &leafCollection, scoreLim, InsertMode.Delete)
 
 	if leafCollection[2].MatchedPositions["0.1.3"] != 0 {
 		panic("")
 	}
 
-	if result["0.0.3:2"] != 2 {
-		panic("")
-	}
+	//SaveLeafCollection("./qweqwe", &leafCollection)
+	// println(qwe)
+
+	// asd := LoadLeafCollection("./qweqwe")
+	// println(len(asd))
 }
