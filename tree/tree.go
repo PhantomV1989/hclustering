@@ -20,8 +20,8 @@ type Tree struct {
 
 func CreateTreeDecomposeMax(familyTreePath []int, f []float64, LeafSize, BranchCount int) Tree {
 	leaf := downsample(f, LeafSize)
-	miv := floats.Min(leaf)
-	floats.AddConst(-miv, leaf)
+	normalizeMaxMin(leaf)
+
 	tree := Tree{
 		FamilyTreePath: familyTreePath,
 		Orig:           f,
@@ -35,8 +35,7 @@ func CreateTreeDecomposeMax(familyTreePath []int, f []float64, LeafSize, BranchC
 
 func CreateTree(familyTreePath []int, f []float64, LeafSize, BranchCount int) Tree {
 	leaf := downsample(f, LeafSize)
-	miv := floats.Min(leaf)
-	floats.AddConst(-miv, leaf)
+	normalizeMaxMin(leaf)
 
 	return Tree{
 		FamilyTreePath: familyTreePath,
@@ -72,6 +71,14 @@ func (t *Tree) Decompose(level int) {
 		tt.Decompose(level - 1)
 		t.Children = append(t.Children, &tt)
 	}
+}
+
+func normalizeMaxMin(f []float64) {
+	miv := floats.Min(f)
+	floats.AddConst(-miv, f)
+
+	mxv := floats.Max(f)
+	floats.Scale(1/mxv, f)
 }
 
 func downsample(f []float64, toSize int) []float64 {

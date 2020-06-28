@@ -42,23 +42,13 @@ func TestA(t *testing.T) {
 
 	leafCollection := []LeafData{}
 
-	InsertLeavesRecursive("0", &aTree, &leafCollection, scoreLim, InsertMode.Insert)
-	InsertLeavesRecursive("0", &bTree, &leafCollection, scoreLim, InsertMode.Insert)
+	InsertLeavesRecursive("0", &aTree, &leafCollection, scoreLim)
+	InsertLeavesRecursive("0", &bTree, &leafCollection, scoreLim)
 
-	if len(leafCollection[2].MatchedPositions) != 8 {
-		panic("len(leafCollection[2].MatchedPositions)!=8")
-	}
-	if leafCollection[2].MatchedPositions["0.1.3"] != 2 {
-		panic("")
-	}
 	FindAllLeafPositions("0", &aTree, &leafCollection, scoreLim, true)
 	GetHierarchicalMatches("0", &bTree, &leafCollection, scoreLim, true)
-	InsertLeavesRecursive("0", &aTree, &leafCollection, scoreLim, InsertMode.Delete)
-	InsertLeavesRecursive("0", &bTree, &leafCollection, scoreLim, InsertMode.Delete)
-
-	if leafCollection[2].MatchedPositions["0.1.3"] != 0 {
-		panic("")
-	}
+	InsertLeavesRecursive("0", &aTree, &leafCollection, scoreLim)
+	InsertLeavesRecursive("0", &bTree, &leafCollection, scoreLim)
 
 	//SaveLeafCollection("./qweqwe", &leafCollection)
 	// println(qwe)
