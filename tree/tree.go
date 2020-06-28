@@ -78,7 +78,10 @@ func normalizeMaxMin(f []float64) {
 	floats.AddConst(-miv, f)
 
 	mxv := floats.Max(f)
-	floats.Scale(1/mxv, f)
+	miv = floats.Min(f)
+	if mxv != miv {
+		floats.Scale(1/mxv, f)
+	}
 }
 
 func downsample(f []float64, toSize int) []float64 {

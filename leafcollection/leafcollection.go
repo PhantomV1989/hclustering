@@ -17,9 +17,12 @@ type LeafData struct {
 }
 
 // SaveLeafCollection "./myfile"
-func SaveLeafCollection(fileName string, ld *[]LeafData) {
-	ldata, _ := json.Marshal(ld)
-	err := ioutil.WriteFile(fileName, ldata, 0644)
+func SaveLeafCollection(fileName string, ld []LeafData) {
+	ldata, err := json.Marshal(ld)
+	if err != nil {
+		panic(err)
+	}
+	err = ioutil.WriteFile(fileName, ldata, 0644)
 	if err != nil {
 		panic(err)
 	}
