@@ -33,7 +33,7 @@ func TestA(t *testing.T) {
 	}
 
 	h := func(x []float64) tree.Tree {
-		x1 := tree.CreateTreeDecomposeMax([]int{0}, x, leafSize, branchCount)
+		x1 := tree.CreateTreeDecomposeMax(x, leafSize, branchCount)
 		return x1
 	}
 

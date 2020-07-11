@@ -10,39 +10,36 @@ type Leaf struct {
 }
 
 type Tree struct {
-	FamilyTreePath []int //oldest first
-	LeafSize       int
-	BranchCount    int
-	Orig           []float64
-	Leaf           []float64
-	Children       []*Tree
+	LeafSize    int
+	BranchCount int
+	Orig        []float64
+	Leaf        []float64
+	Children    []*Tree
 }
 
-func CreateTreeDecomposeMax(familyTreePath []int, f []float64, LeafSize, BranchCount int) Tree {
+func CreateTreeDecomposeMax(f []float64, LeafSize, BranchCount int) Tree {
 	leaf := downsample(f, LeafSize)
 	normalizeMaxMin(leaf)
 
 	tree := Tree{
-		FamilyTreePath: familyTreePath,
-		Orig:           f,
-		Leaf:           leaf,
-		LeafSize:       LeafSize,
-		BranchCount:    BranchCount,
+		Orig:        f,
+		Leaf:        leaf,
+		LeafSize:    LeafSize,
+		BranchCount: BranchCount,
 	}
 	tree.DecomposeMax()
 	return tree
 }
 
-func CreateTree(familyTreePath []int, f []float64, LeafSize, BranchCount int) Tree {
+func CreateTree(f []float64, LeafSize, BranchCount int) Tree {
 	leaf := downsample(f, LeafSize)
 	normalizeMaxMin(leaf)
 
 	return Tree{
-		FamilyTreePath: familyTreePath,
-		Orig:           f,
-		Leaf:           leaf,
-		LeafSize:       LeafSize,
-		BranchCount:    BranchCount,
+		Orig:        f,
+		Leaf:        leaf,
+		LeafSize:    LeafSize,
+		BranchCount: BranchCount,
 	}
 }
 
@@ -50,9 +47,8 @@ func CreateTree(familyTreePath []int, f []float64, LeafSize, BranchCount int) Tr
 func (t *Tree) DecomposeMax() {
 	if len(t.Orig) >= t.BranchCount*t.LeafSize {
 		branchArrs := partitionFloatArr(t.Orig, t.BranchCount)
-		ftp := t.FamilyTreePath
 		for b := range branchArrs {
-			tt := CreateTree(append(ftp, b), branchArrs[b], t.LeafSize, t.BranchCount)
+			tt := CreateTree(branchArrs[b], t.LeafSize, t.BranchCount)
 			tt.DecomposeMax()
 			t.Children = append(t.Children, &tt)
 		}
@@ -65,9 +61,8 @@ func (t *Tree) Decompose(level int) {
 		return
 	}
 	branchArrs := partitionFloatArr(t.Orig, t.BranchCount)
-	ftp := t.FamilyTreePath
 	for b := range branchArrs {
-		tt := CreateTree(append(ftp, b), branchArrs[b], t.LeafSize, t.BranchCount)
+		tt := CreateTree(branchArrs[b], t.LeafSize, t.BranchCount)
 		tt.Decompose(level - 1)
 		t.Children = append(t.Children, &tt)
 	}
