@@ -19,9 +19,7 @@ type Tree struct {
 
 func CreateTreeDecomposeMax(f []float64, LeafSize, BranchCount int, scaleOne bool) Tree {
 	leaf := downsample(f, LeafSize)
-	if scaleOne {
-		normalizeMaxMin(leaf, scaleOne)
-	}
+	normalizeMaxMin(leaf, scaleOne)
 
 	tree := Tree{
 		Orig:        f,
