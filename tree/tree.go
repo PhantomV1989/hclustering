@@ -17,9 +17,11 @@ type Tree struct {
 	Children    []*Tree
 }
 
-func CreateTreeDecomposeMax(f []float64, LeafSize, BranchCount int) Tree {
+func CreateTreeDecomposeMax(f []float64, LeafSize, BranchCount int, scaleOne bool) Tree {
 	leaf := downsample(f, LeafSize)
-	normalizeMaxMin(leaf)
+	if scaleOne {
+		normalizeMaxMin(leaf, scaleOne)
+	}
 
 	tree := Tree{
 		Orig:        f,
@@ -27,13 +29,13 @@ func CreateTreeDecomposeMax(f []float64, LeafSize, BranchCount int) Tree {
 		LeafSize:    LeafSize,
 		BranchCount: BranchCount,
 	}
-	tree.DecomposeMax()
+	tree.DecomposeMax(scaleOne)
 	return tree
 }
 
-func CreateTree(f []float64, LeafSize, BranchCount int) Tree {
+func CreateTree(f []float64, LeafSize, BranchCount int, scaleOne bool) Tree {
 	leaf := downsample(f, LeafSize)
-	normalizeMaxMin(leaf)
+	normalizeMaxMin(leaf, scaleOne)
 
 	return Tree{
 		Orig:        f,
@@ -44,38 +46,40 @@ func CreateTree(f []float64, LeafSize, BranchCount int) Tree {
 }
 
 // DecomposeMax decomposes tree until the smallest original leaf array is >= defined unit leaf size
-func (t *Tree) DecomposeMax() {
+func (t *Tree) DecomposeMax(scaleOne bool) {
 	if len(t.Orig) >= t.BranchCount*t.LeafSize {
 		branchArrs := partitionFloatArr(t.Orig, t.BranchCount)
 		for b := range branchArrs {
-			tt := CreateTree(branchArrs[b], t.LeafSize, t.BranchCount)
-			tt.DecomposeMax()
+			tt := CreateTree(branchArrs[b], t.LeafSize, t.BranchCount, scaleOne)
+			tt.DecomposeMax(scaleOne)
 			t.Children = append(t.Children, &tt)
 		}
 	}
 }
 
 // Decompose breaks tree down by n levels
-func (t *Tree) Decompose(level int) {
+func (t *Tree) Decompose(level int, scaleOne bool) {
 	if level <= 0 {
 		return
 	}
 	branchArrs := partitionFloatArr(t.Orig, t.BranchCount)
 	for b := range branchArrs {
-		tt := CreateTree(branchArrs[b], t.LeafSize, t.BranchCount)
-		tt.Decompose(level - 1)
+		tt := CreateTree(branchArrs[b], t.LeafSize, t.BranchCount, scaleOne)
+		tt.Decompose(level-1, scaleOne)
 		t.Children = append(t.Children, &tt)
 	}
 }
 
-func normalizeMaxMin(f []float64) {
+func normalizeMaxMin(f []float64, scaleOne bool) {
 	miv := floats.Min(f)
 	floats.AddConst(-miv, f)
 
-	mxv := floats.Max(f)
-	miv = floats.Min(f)
-	if mxv != miv {
-		floats.Scale(1/mxv, f)
+	if scaleOne {
+		mxv := floats.Max(f)
+		miv = floats.Min(f)
+		if mxv != miv {
+			floats.Scale(1/mxv, f)
+		}
 	}
 }
 

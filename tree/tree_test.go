@@ -39,8 +39,8 @@ func TestDownsample(t *testing.T) {
 
 func TestCreateDecomposeTree(t *testing.T) {
 	qwe := createRandomFloat(120)
-	t1 := CreateTree(qwe, 20, 2)
-	t1.Decompose(1)
+	t1 := CreateTree(qwe, 20, 2, true)
+	t1.Decompose(1, true)
 	if len(t1.Children) != 2 {
 		panic("len(t1.Children)!=2")
 	}
@@ -48,8 +48,8 @@ func TestCreateDecomposeTree(t *testing.T) {
 
 func TestDecomposeMax(t *testing.T) {
 	qwe := createRandomFloat(120)
-	t1 := CreateTree(qwe, 20, 2)
-	t1.DecomposeMax()
+	t1 := CreateTree(qwe, 20, 2, true)
+	t1.DecomposeMax(true)
 	if len(t1.Children) != 2 {
 		panic("len(t1.Children)!=2")
 	}

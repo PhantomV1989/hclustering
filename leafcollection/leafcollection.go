@@ -74,7 +74,7 @@ func InsertLeavesRecursive(prefix string, tree *tree.Tree, leafArray *[]LeafData
 }
 
 func FindInsertLeaf(prefix string, tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64) int {
-	leafPos := findLeaf(prefix, tree, leafArray, scoreLimit)
+	leafPos := findLeaf(tree, leafArray, scoreLimit)
 	if leafPos == -1 {
 		ld := LeafData{
 			Data: tree.Leaf,
@@ -86,14 +86,14 @@ func FindInsertLeaf(prefix string, tree *tree.Tree, leafArray *[]LeafData, score
 }
 
 func findAllLeafPos(prefix string, tree *tree.Tree, leafArray *[]LeafData, result *map[string]int, scoreLimit float64) {
-	leafPos := findLeaf(prefix, tree, leafArray, scoreLimit)
+	leafPos := findLeaf(tree, leafArray, scoreLimit)
 	(*result)[prefix] = leafPos
 	for i := range tree.Children {
 		findAllLeafPos(prefix+"."+strconv.Itoa(i), tree.Children[i], leafArray, result, scoreLimit)
 	}
 }
 
-func findLeaf(prefix string, tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64) int {
+func findLeaf(tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64) int {
 	for i := range *leafArray {
 		s := getScore(tree.Leaf, (*leafArray)[i].Data)
 		if s < scoreLimit {
