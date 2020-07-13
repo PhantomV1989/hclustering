@@ -67,13 +67,13 @@ func FindAllLeafPositions(prefix string, tree *tree.Tree, leafArray *[]LeafData,
 
 // InsertLeavesRecursive inserts all leaves of a decomposed tree to an array
 func InsertLeavesRecursive(prefix string, tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64) {
-	FindInsertLeaf(prefix, tree, leafArray, scoreLimit)
+	FindInsertLeaf(tree, leafArray, scoreLimit)
 	for i := range tree.Children {
 		InsertLeavesRecursive(prefix+"."+strconv.Itoa(i), tree.Children[i], leafArray, scoreLimit)
 	}
 }
 
-func FindInsertLeaf(prefix string, tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64) int {
+func FindInsertLeaf(tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64) int {
 	leafPos := findLeaf(tree, leafArray, scoreLimit)
 	if leafPos == -1 {
 		ld := LeafData{
