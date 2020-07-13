@@ -73,6 +73,7 @@ func InsertLeavesRecursive(prefix string, tree *tree.Tree, leafArray *[]LeafData
 	}
 }
 
+// FindInsertLeaf find, insert new leaf if not found
 func FindInsertLeaf(tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64) int {
 	leafPos := findLeaf(tree, leafArray, scoreLimit)
 	if leafPos == -1 {
