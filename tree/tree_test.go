@@ -19,19 +19,19 @@ func createRandomFloat(size int) []float64 {
 func TestDownsample(t *testing.T) {
 	x := createRandomFloat(100)
 	sz := 20
-	f := downsample(x, sz)
+	f := Downsample(x, sz)
 	if len(f) != sz {
 		panic("")
 	}
 
 	sz = 80
-	f = downsample(x, sz)
+	f = Downsample(x, sz)
 	if len(f) != sz || f[0] != x[0] {
 		panic("")
 	}
 
 	sz = 33
-	f = downsample(x, sz)
+	f = Downsample(x, sz)
 	if len(f) != sz {
 		panic("")
 	}
