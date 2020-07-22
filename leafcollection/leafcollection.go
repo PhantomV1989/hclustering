@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/gonum/floats"
 	"github.com/phantomv1989/hclustering/tree"
@@ -44,25 +43,26 @@ func LoadLeafCollection(folderPath string) []LeafData {
 	return ld
 }
 
-// GetHierarchicalMatches returns all matched leaves in a hierarchical structure
-func GetHierarchicalMatches(prefix string, tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64, withLeafPos bool) map[int]map[string]int {
-	allpos := FindAllLeafPositions(prefix, tree, leafArray, scoreLimit, withLeafPos)
-	result := map[int]map[string]int{}
-	for i := range allpos {
-		k := strings.Count(i, ".")
-		if _, e := result[k]; !e {
-			result[k] = map[string]int{}
-		}
-		result[k][i] = allpos[i]
-	}
-	return result
-}
+// // GetHierarchicalMatches returns all matched leaves in a hierarchical structure
+// func GetHierarchicalMatches(prefix string, tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64, withLeafPos bool) map[int]map[string]int {
+// 	allpos, allscore := FindAllLeafPositions(prefix, tree, leafArray, withLeafPos)
+// 	result := map[int]map[string]int{}
+// 	for i := range allpos {
+// 		k := strings.Count(i, ".")
+// 		if _, e := result[k]; !e {
+// 			result[k] = map[string]int{}
+// 		}
+// 		result[k][i] = allpos[i]
+// 	}
+// 	return result
+// }
 
 // FindAllLeafPositions returns all matched leaves in a flat format, Key format as follows Tree.Path:LeafPos
-func FindAllLeafPositions(prefix string, tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64, withLeafPos bool) map[string]int {
+func FindAllLeafPositions(prefix string, tree *tree.Tree, leafArray *[]LeafData, withLeafPos bool) (map[string]int, map[string]float64) {
 	result := map[string]int{}
-	findAllLeafPos(prefix, tree, leafArray, &result, scoreLimit)
-	return result
+	rscore := map[string]float64{}
+	findAllLeafPos(prefix, tree, leafArray, &result, &rscore)
+	return result, rscore
 }
 
 // InsertLeavesRecursive inserts all leaves of a decomposed tree to an array
@@ -75,8 +75,8 @@ func InsertLeavesRecursive(prefix string, tree *tree.Tree, leafArray *[]LeafData
 
 // FindInsertLeaf find, insert new leaf if not found
 func FindInsertLeaf(tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64) int {
-	leafPos := findLeaf(tree, leafArray, scoreLimit)
-	if leafPos == -1 {
+	leafPos, score := findLeaf(tree, leafArray)
+	if score > scoreLimit {
 		ld := LeafData{
 			Data: tree.Leaf,
 		}
@@ -86,22 +86,27 @@ func FindInsertLeaf(tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64) 
 	return leafPos
 }
 
-func findAllLeafPos(prefix string, tree *tree.Tree, leafArray *[]LeafData, result *map[string]int, scoreLimit float64) {
-	leafPos := findLeaf(tree, leafArray, scoreLimit)
+func findAllLeafPos(prefix string, tree *tree.Tree, leafArray *[]LeafData, result *map[string]int, rscore *map[string]float64) {
+	leafPos, score := findLeaf(tree, leafArray)
 	(*result)[prefix] = leafPos
+	(*rscore)[prefix] = score
 	for i := range tree.Children {
-		findAllLeafPos(prefix+"."+strconv.Itoa(i), tree.Children[i], leafArray, result, scoreLimit)
+		findAllLeafPos(prefix+"."+strconv.Itoa(i), tree.Children[i], leafArray, result, rscore)
 	}
 }
 
-func findLeaf(tree *tree.Tree, leafArray *[]LeafData, scoreLimit float64) int {
+func findLeaf(tree *tree.Tree, leafArray *[]LeafData) (int, float64) {
+	bestMatchPos := 0
+	bestMatchScore := getScore(tree.Leaf, (*leafArray)[0].Data)
+
 	for i := range *leafArray {
 		s := getScore(tree.Leaf, (*leafArray)[i].Data)
-		if s < scoreLimit {
-			return i
+		if s < bestMatchScore {
+			bestMatchPos = i
+			bestMatchScore = s
 		}
 	}
-	return -1
+	return bestMatchPos, bestMatchScore
 }
 
 func getScore(a, b []float64) float64 {

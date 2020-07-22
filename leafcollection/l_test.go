@@ -47,8 +47,8 @@ func TestA(t *testing.T) {
 	InsertLeavesRecursive("0", &bTree, &leafCollection, scoreLim)
 	InsertLeavesRecursive("0", &cTree, &leafCollection, scoreLim)
 
-	FindAllLeafPositions("0", &aTree, &leafCollection, scoreLim, true)
-	GetHierarchicalMatches("0", &bTree, &leafCollection, scoreLim, true)
+	// FindAllLeafPositions("0", &aTree, &leafCollection, scoreLim, true)
+	// GetHierarchicalMatches("0", &bTree, &leafCollection, scoreLim, true)
 	InsertLeavesRecursive("0", &aTree, &leafCollection, scoreLim)
 	InsertLeavesRecursive("0", &bTree, &leafCollection, scoreLim)
 
